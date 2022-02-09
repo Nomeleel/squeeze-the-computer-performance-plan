@@ -1,9 +1,11 @@
 
+output=/Volumes/X/real-output/
+
 realesrgan=realesrgan-ncnn-vulkan-20211212-macos
 
-dir=$(basename $1)
+file=$(basename $1)
 
-echo ${dir}
+dir=${output}${file}
 
 mkdir -p ${dir}/tmp_frames
 
@@ -15,8 +17,8 @@ cd ${realesrgan}
 
 chmod u+x ./realesrgan-ncnn-vulkan
 
-./realesrgan-ncnn-vulkan -i ../${dir}/tmp_frames/ -o ../${dir}/out_frames -n RealESRGANv2-animevideo-xsx4 -s 4 -f jpg
+./realesrgan-ncnn-vulkan -i ${dir}/tmp_frames/ -o ${dir}/out_frames -n RealESRGANv2-animevideo-xsx4 -s 4 -f jpg
 
 cd ../
 
-ffmpeg -i ${dir}/out_frames/frame%09d.jpg -i $1 -map 0:v:0 -map 1:a:0 -c:a copy -c:v libx264 -r 23.98 -pix_fmt yuv420p ${dir}/${dir}
+ffmpeg -i ${dir}/out_frames/frame%09d.jpg -i $1 -map 0:v:0 -map 1:a:0 -c:a copy -c:v libx264 -r 23.98 -pix_fmt yuv420p ${dir}/${file}
